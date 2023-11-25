@@ -11,12 +11,16 @@ datasource db {
 }
 
 model User {
-  id          Int     @id @default(autoincrement())
-  email       String  @unique
-  name        String?
-  createdAt   Int
-  updatedAt   Int
-  posts       Post[]
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
+  password      String  @db.VarChar(255) 
+  name          String 
+  role          Role   @default(USER)
+  refresh_token String? @db.Text
+  createdAt     Int    
+  updatedAt     Int
+  posts         Post[]
+  @@map("users")
 }
 
 model Post {
@@ -24,8 +28,14 @@ model Post {
   title     String
   content   String?
   published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
+  author    User   @relation(fields: [authorId], references: [id])
   authorId  Int
   createdAt Int
   updatedAt Int
+  @@map("posts")
+}
+
+enum Role {
+  USER
+  ADMIN
 }
