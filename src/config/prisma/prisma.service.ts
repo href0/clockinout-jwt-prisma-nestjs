@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { PrismaClient, Prisma } from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends  PrismaClient<Prisma.PrismaClientOptions, Prisma.LogLevel>  implements OnModuleInit {
+export class PrismaService extends PrismaClient<Prisma.PrismaClientOptions, Prisma.LogLevel> implements OnModuleInit {
   constructor() {
     super({
       // Aktifkan logging
@@ -25,11 +25,10 @@ export class PrismaService extends  PrismaClient<Prisma.PrismaClientOptions, Pri
         },
       ],
     });
-  
   }
   private readonly logger = new Logger(PrismaService.name);
   async onModuleInit() {
-    await this.$connect()
+    await this.$connect();
     // this.$use(this.categorySoftDeleteMiddleware);
     // this.$use(this.categoryFindMiddleware);
     this.$on('error', ({ message }) => {
@@ -45,5 +44,4 @@ export class PrismaService extends  PrismaClient<Prisma.PrismaClientOptions, Pri
       this.logger.log(`${query}; ${params}`);
     });
   }
-  
 }

@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Req, UseGuards, HttpException, Put, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Sort } from 'src/core/filters/sort';
 import { FilterUser } from './interface/filter.interface';
-import { AuthGuard } from '../auth/auth.guard';
+import { RolesGuard } from 'src/guard/roles.guard';
+import { Role, Roles } from '../../../core/decorators/role.decorator';
+import { Request } from 'express'
+import { Public } from 'src/core/decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -16,8 +19,9 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @UseGuards(AuthGuard)
   @Get()
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   async findAll(
     @Query('page') page : number,
     @Query('perPage') perPage : number,
@@ -60,17 +64,43 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    if(isNaN(id)) throw new HttpException('id must be a number', HttpStatus.BAD_REQUEST)
+    return this.userService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Param('id') id: number, 
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() request : Request
+  ) {
+    if(isNaN(id)) throw new HttpException('id must be a number', HttpStatus.BAD_REQUEST)
+    const userId = request.user['id']
+    const userRole = request.user['role']
+    return this.userService.update(+id, updateUserDto, userId, userRole);
+  }
+
+  @Put('change-password/:id')
+  changePassword(
+    @Param('id') id: number, 
+    @Body() body : any,
+    @Req() request : Request
+  ) {
+    if(isNaN(id)) throw new HttpException('id must be a number', HttpStatus.BAD_REQUEST)
+    const userId = request.user['id']
+    const userRole = request.user['role']
+    return this.userService.updatePassword(+id, body.password , userRole, userId);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Public()
+  @Post('refresh-token')
+  async refreshToken(@Req() req : Request){
+    return this.userService.getToken(req.cookies.refreshToken)
   }
 }

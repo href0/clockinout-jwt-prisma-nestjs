@@ -6,14 +6,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from 'src/config/jwt/jwt.config';
 import { PassportModule } from '@nestjs/passport'
 import { JwtStrategy } from 'src/config/jwt/jwt.strategy';
-
 @Module({
   imports : [PrismaModule, PassportModule, JwtModule.register({
     // global : true,
-    secret : jwtConfig.secret,
+    // secret : jwtConfig.accessTokenSecret,
     // signOptions : { expiresIn : jwtConfig.expired }
-  })],
+  }),
+],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
+  exports : [AuthModule]
 })
 export class AuthModule {}

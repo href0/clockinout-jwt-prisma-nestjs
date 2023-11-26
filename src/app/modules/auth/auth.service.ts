@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, ExecutionContext } from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { PrismaService } from 'src/config/prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
@@ -10,7 +10,7 @@ import { JwtExpired, jwtConfig } from 'src/config/jwt/jwt.config';
 export class AuthService {
   constructor(
     private prisma : PrismaService,
-    private jwtService : JwtService
+    private jwtService : JwtService,
   ){}
   
   async signUp(createUserDto: CreateUserDto) {
@@ -44,9 +44,10 @@ export class AuthService {
     if(!compare)throw new HttpException('email or password wrong!', HttpStatus.BAD_REQUEST)
 
     const tokenPayload = {
-      sub : user.id,
-      name : user.name,
-      email : user.email
+      sub   : user.id,
+      name  : user.name,
+      email : user.email,
+      role  : user.role
     }
 
     const refreshToken = this.generateToken(tokenPayload, JwtExpired.REFRESH)
@@ -57,7 +58,7 @@ export class AuthService {
     })
     const access_token = this.generateToken(tokenPayload, JwtExpired.ACCESS)
     return {
-      statusCode : 200,
+      refreshToken,
       data : {...update, access_token}
     }
   }
@@ -65,8 +66,9 @@ export class AuthService {
   async signout(){}
 
   generateToken(payload : any, expired : JwtExpired) {
+    const secret = expired == '1h' ? jwtConfig.accessTokenSecret : jwtConfig.refreshTokenSecret
     return this.jwtService.sign(payload, {
-      secret: jwtConfig.secret,
+      secret: secret,
       expiresIn: expired,
     })
   }
