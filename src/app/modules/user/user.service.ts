@@ -5,13 +5,13 @@ import { PrismaService } from 'src/config/prisma/prisma.service';
 import { Pagination } from 'src/core/filters/pagination';
 import { Sort } from 'src/core/filters/sort';
 import { User } from './interface/user.interface';
-import { FilterUser, OrderBy } from './interface/filter.interface';
 import { JwtService } from '@nestjs/jwt';
 import { JwtExpired, jwtConfig } from 'src/config/jwt/jwt.config';
 import { AuthService } from '../auth/auth.service';
 import  * as bcrypt from 'bcrypt'
 import { Role } from '@prisma/client';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
+import { FilterUserDto, OrderBy } from './dto/filter-user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -32,10 +32,11 @@ export class UserService {
     }
   }
 
-  async findAll(filter: FilterUser) : Promise<{ items : User[], pagination : Pagination }> {
-    const page = filter.page || 1
-    const perPage = filter.perPage || 10
+  async findAll(filter: FilterUserDto) : Promise<{ items : User[], pagination : Pagination }> {
+    let page = +filter.page || 1
+    const perPage = +filter.perPage || 10
     let search = filter.email
+
     if(filter.name) {
       search = filter.name
     }
