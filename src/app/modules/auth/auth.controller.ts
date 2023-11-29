@@ -1,9 +1,9 @@
-import { Controller, Post, Body, ValidationPipe, UsePipes, Res } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, UsePipes, Res, Delete, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/signup-auth';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { Public } from '../../../core/decorators/public.decorator';
-import { Response } from 'express'
+import { Response, Request } from 'express'
 
 @Controller('auth')
 export class AuthController {
@@ -28,6 +28,23 @@ export class AuthController {
     return res.status(200).json({
       statusCode : 200,
       data : data
+    })
+  }
+
+  @Public()
+  @Delete('signout')
+  async signout(
+    @Res() res : Response,
+    @Req() req : Request
+  ) {
+    const refreshToken = req.cookies.refreshToken
+    if(!refreshToken) return res.send(204)
+    await this.authService.signout(refreshToken)
+    res.clearCookie('refreshToken')
+
+    return res.status(200).json({
+      statusCode : 200,
+      message : "Berhasil logout"
     })
   }
 }

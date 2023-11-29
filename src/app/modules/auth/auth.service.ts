@@ -63,7 +63,17 @@ export class AuthService {
     }
   }
 
-  async signout(){}
+  async signout(refreshToken : any){
+    const user = await this.prisma.user.findFirst({
+      where : { refresh_token : refreshToken }
+    })
+    if(!user) return true
+    await this.prisma.user.update({
+      where : { id : user.id },
+      data : { refresh_token : null }
+    })
+    return true
+  }
 
   generateToken(payload : any, expired : JwtExpired) {
     const secret = expired == '1h' ? jwtConfig.accessTokenSecret : jwtConfig.refreshTokenSecret
