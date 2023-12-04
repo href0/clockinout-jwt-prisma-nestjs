@@ -1,10 +1,12 @@
-import { Controller, Post, Body, ValidationPipe, UsePipes, Res, Delete, Req } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, UsePipes, Res, Delete, Req, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/signup-auth';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { Public } from '../../../core/decorators/public.decorator';
 import { Response, Request } from 'express'
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags("Auth")
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -12,6 +14,7 @@ export class AuthController {
   @Public()
   @Post('signup')
   @UsePipes(ValidationPipe)
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   signup(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.signUp(createAuthDto);
   }
@@ -46,5 +49,17 @@ export class AuthController {
       statusCode : 200,
       message : "Berhasil logout"
     })
+  }
+
+  @Public()
+  @Post('xendit')
+  async xendit(
+    @Req() req : Request
+  ) {
+    console.log(req.body)
+    return {
+      statusCode : 200,
+      message : "Ok"
+    }
   }
 }

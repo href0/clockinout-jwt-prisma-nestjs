@@ -40,6 +40,11 @@ export class UserService {
     if(filter.name) {
       search = filter.name
     }
+
+    if(!filter.sort) {
+      filter.sort = Sort.ASC
+    }
+
     const allowedOrderBy = [ 'updatedAt', 'createdAt', 'name', 'email', 'id' ]
     if(!allowedOrderBy.includes(filter.sortBy)){
       filter.sortBy = OrderBy.updatedAt
@@ -95,9 +100,14 @@ export class UserService {
     }
 
     updateUserDto.updatedAt = new Date().getTime() / 1000
+    const data = {
+      name      : updateUserDto.name,
+      email     : updateUserDto.email,
+      updatedAt : updateUserDto.updatedAt,
+    }
     const update = await this.prisma.user.update({
       where  : { id : id },
-      data   : updateUserDto,
+      data   : data,
       select : { id : true, email : true, name : true, role : true, createdAt : true }
     })
     return {

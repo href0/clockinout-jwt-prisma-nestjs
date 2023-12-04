@@ -7,17 +7,27 @@ import { Role, Roles } from '../../../core/decorators/role.decorator';
 import { Request } from 'express'
 import { Public } from 'src/core/decorators/public.decorator';
 import { FilterUserDto } from './dto/filter-user.dto';
+import { ApiBearerAuth, ApiTags, ApiQuery, ApiBody } from '@nestjs/swagger';
+import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UsePipes(ValidationPipe)
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+  // @UsePipes(ValidationPipe)
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.userService.create(createUserDto);
+  // }
 
+  @ApiBearerAuth('accessToken')
+  @ApiQuery({ name : 'sortBy', required : false, type : "string" })
+  @ApiQuery({ name : 'sort', required : false, type : "string" })
+  @ApiQuery({ name : 'name', required : false, type : "string" })
+  @ApiQuery({ name : 'email', required : false, type : "string" })
+  @ApiQuery({ name : 'perPage', required : true, type : "number", })
+  @ApiQuery({ name : 'page', required : true, type : "number" })
   @Get()
   async findAll(
     @Query() filter : FilterUserDto,
@@ -47,6 +57,7 @@ export class UserController {
     }
   }
 
+  @ApiBearerAuth('accessToken')
   @Get(':id')
   findOne(@Param('id') id: string) {
     const check = Number(id)
@@ -54,6 +65,7 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @ApiBearerAuth('accessToken')
   @Patch(':id') 
   update(
     @Param('id') id: number, 
@@ -66,10 +78,11 @@ export class UserController {
     return this.userService.update(+id, updateUserDto, userId, userRole);
   }
 
+  @ApiBearerAuth('accessToken')
   @Post('change-password/:id')
   changePassword(
     @Param('id') id: number, 
-    @Body() body : any,
+    @Body() body : UpdatePasswordUserDto,
     @Req() request : Request
   ) {
     if(isNaN(id)) throw new HttpException('id must be a number', HttpStatus.BAD_REQUEST)
@@ -78,6 +91,7 @@ export class UserController {
     return this.userService.updatePassword(+id, body.password , userRole, userId);
   }
 
+  @ApiBearerAuth('accessToken')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
