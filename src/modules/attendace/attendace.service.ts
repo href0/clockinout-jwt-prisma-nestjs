@@ -111,6 +111,10 @@ export class AttendanceService {
 
     const minClockIn = new Date(currentDate + " " + MIN_TIME + ":00").getTime()
     const maxClockIn = new Date(currentDate + " " + MAX_TIME + ":00").getTime()
+
+    this.logger.log('Current Time', currentTime)
+    this.logger.log('Minimal Time allowed to clockin', TimestampToDate(minClockIn))
+    this.logger.log('Maksimal Time allowed to clockin', TimestampToDate(maxClockIn))
     
     if(now < minClockIn || now > maxClockIn) {
       return false
