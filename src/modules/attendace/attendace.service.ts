@@ -7,9 +7,7 @@ import { TimestampToDate } from 'src/core/utils/common-utils';
 @Injectable()
 export class AttendanceService {
 
-  constructor(
-    private prisma : PrismaService
-  ){}
+  constructor(private prisma : PrismaService){}
 
   private readonly logger  = new Logger(AttendanceService.name)
 
@@ -20,20 +18,23 @@ export class AttendanceService {
     data.updatedAt = now
 
     this.logger.log(`clock In user ${data.userId}`)
-    const create = await this.prisma.attendance.create({
+    const save = await this.prisma.attendance.create({
       data : data,
       select : { id: true, userId : true, clockIn : true, clockInIpAddress :true, clockInLatitude : true, clockInLongitude : true }
     })
+
+    save['clockInDate'] = TimestampToDate(save.clockIn * 1000)
+
     return {
       statusCode : 200,
       message : "Clock in success",
-      data : create,
+      data : save,
     }
   }
 
   async clockOut(data: clockOutAttendanceDto) {
-    const clockIn = await this.hasUserClockedIn(data.userId)
-    if(!clockIn) {
+    const clockInId = await this.hasUserClockedIn(data.userId)
+    if(!clockInId) {
       const message = `User has not clocked in yet`
       this.logger.warn(message)
       throw new HttpException(message, HttpStatus.CONFLICT)
@@ -44,15 +45,17 @@ export class AttendanceService {
     data.updatedAt = now
 
     this.logger.log(`clock Out user ${data.userId}`)
-    const create = await this.prisma.attendance.update({
-      where : { id : clockIn },
+    const save = await this.prisma.attendance.update({
+      where : { id : clockInId },
       data : data,
       select : { id : true, userId : true, clockOut : true, clockOutIpAddress :true, clockOutLatitude : true, clockOutLongitude : true }
     })
+
+    save['clockOutDate'] = TimestampToDate(save.clockOut * 1000)
     return {
       statusCode : 200,
       message : "Clock out success",
-      data : create,
+      data : save,
     }
   }
 

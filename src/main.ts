@@ -9,9 +9,12 @@ async function bootstrap() {
   const app = await NestFactory.create(
     AppModule, 
     new ExpressAdapter(express()),
-    { cors: { origin: 'http://localhost:4200' }, });
+    { cors: { origin: 'http://localhost:4200' }, 
+  });
+
   app.use(cookieParser());
-  app.getHttpAdapter().getInstance().set('trust proxy', true);
+  app.getHttpAdapter().getInstance().set('trust proxy', true); 
+
   const config = new DocumentBuilder()
     .setTitle('Href Corp')
     .setDescription('Auth, CRUD User, Clock In & Clock Out')
@@ -20,7 +23,7 @@ async function bootstrap() {
       'accessToken',
     )
     .setVersion('1.0')
-    // .addTag('First Nest')
+    // .addTag('NestJS')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-doc', app, document);
