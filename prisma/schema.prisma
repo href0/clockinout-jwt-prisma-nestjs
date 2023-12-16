@@ -19,12 +19,12 @@ model User {
   refresh_token String?     @db.Text
   createdAt     Int
   updatedAt     Int
-  attendace     Attendace[]
+  attendance     Attendance[]
 
   @@map("users")
 }
 
-model Attendace {
+model Attendance {
   id                Int     @id @default(autoincrement())
   userId            Int
   user              User    @relation(fields: [userId], references: [id])
@@ -40,7 +40,7 @@ model Attendace {
   createdAt         Int
   updatedAt         Int
 
-  @@map("attendance")
+  @@map("attendances")
 }
 
 enum Role {
