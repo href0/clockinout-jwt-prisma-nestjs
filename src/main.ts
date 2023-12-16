@@ -6,12 +6,13 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
 
 async function bootstrap() {
+  process.env.TZ = 'Asia/Jakarta';
+
   const app = await NestFactory.create(
     AppModule, 
     new ExpressAdapter(express()),
     { cors: { origin: 'http://localhost:4200' }, 
   });
-
   app.use(cookieParser());
   app.getHttpAdapter().getInstance().set('trust proxy', true); 
 
