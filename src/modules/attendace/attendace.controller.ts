@@ -18,13 +18,7 @@ export class AttendaceController {
     @Body() data: ClockInAttendanceDto,
     @Req() req : Request
   ) {
-    // Ref = https://stackoverflow.com/questions/10849687/express-js-how-to-get-remote-client-address
-    data.clockInIpAddress = 
-      req.headers['cf-connecting-ip'] || // cloudfare
-      req.headers['x-real-ip'] || // Nginx
-      req.headers['x-forwarded-for'] || 
-      req.socket.remoteAddress ||
-      ""
+    data.clockInIpAddress = req.ip
     data.userId = req.user['id']
 
     const isClockInAvailable = this.attendanceService.isClockInAvailable()
@@ -44,13 +38,7 @@ export class AttendaceController {
     @Body() data: clockOutAttendanceDto,
     @Req() req : Request
   ) {
-    // Ref = https://stackoverflow.com/questions/10849687/express-js-how-to-get-remote-client-address
-    data.clockOutIpAddress = 
-      req.headers['cf-connecting-ip'] || // cloudfare
-      req.headers['x-real-ip'] || // Nginx
-      req.headers['x-forwarded-for'] || 
-      req.socket.remoteAddress ||
-      ""
+    data.clockOutIpAddress = req.ip
     data.userId = req.user['id']
     const hasClockedIn = await this.attendanceService.hasUserClockedOut(data.userId);
     
