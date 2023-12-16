@@ -46,9 +46,9 @@ $ npm run start:prod
 ```
 
 ## Documentation
-```
-- Swagger - [Kamil Myśliwiec](http://localhost:3000/api-doc)
-```
+
+- Swagger - http://localhost:3000/api-doc
+
 
 ## Support
 
