@@ -7,7 +7,7 @@ import { Role, Roles } from '../../../core/decorators/role.decorator';
 import { Request } from 'express'
 import { Public } from 'src/core/decorators/public.decorator';
 import { FilterUserDto } from './dto/filter-user.dto';
-import { ApiBearerAuth, ApiTags, ApiQuery, ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiQuery, ApiBody, ApiCookieAuth } from '@nestjs/swagger';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 
 @ApiTags('User')
@@ -93,8 +93,14 @@ export class UserController {
 
   @ApiBearerAuth('accessToken')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  remove(
+    @Param('id') id: number,
+    @Req() request : Request
+  ) {
+    if(isNaN(id)) throw new HttpException('id must be a number', HttpStatus.BAD_REQUEST)
+    const userId = request.user['id']
+    const userRole = request.user['role']
+    return this.userService.remove(+id, userId, userRole);
   }
 
   @Public()

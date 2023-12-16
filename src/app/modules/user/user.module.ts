@@ -4,10 +4,12 @@ import { UserController } from './user.controller';
 import { PrismaModule } from 'src/config/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from '../auth/auth.service';
+import { AttendaceModule } from '../attendace/attendace.module';
+import { AttendaceService } from '../attendace/attendace.service';
 
 @Module({
-  imports : [PrismaModule, JwtModule],
+  imports : [PrismaModule, AttendaceModule, JwtModule],
   controllers: [UserController],
-  providers: [UserService, AuthService],
+  providers: [UserService, AuthService, AttendaceService],
 })
 export class UserModule {}

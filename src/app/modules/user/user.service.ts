@@ -12,12 +12,14 @@ import  * as bcrypt from 'bcrypt'
 import { Role } from '@prisma/client';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 import { FilterUserDto, OrderBy } from './dto/filter-user.dto';
+import { AttendaceService } from '../attendace/attendace.service';
 @Injectable()
 export class UserService {
   constructor(
     private prisma : PrismaService,
     private authService : AuthService,
     private jwtService : JwtService,
+    private attendaceService : AttendaceService
   ){}
   private readonly logger  = new Logger(UserService.name)
   async create(createUserDto: CreateUserDto) {
@@ -95,7 +97,7 @@ export class UserService {
     })
     if(!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND)
     if(userRole !== 'ADMIN' && user.id !== userId) {
-      this.logger.warn('Role USER Cannot Update another user')
+      this.logger.warn('Cannot Update another user')
       throw new HttpException('Cannot update another user', HttpStatus.NOT_ACCEPTABLE)
     }
 
@@ -148,8 +150,32 @@ export class UserService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number, userId : number, userRole : Role) {
+    const user = await this.prisma.user.findUnique({
+      where : { id : id }
+    })
+    if(!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND)
+
+    const isHasClockedIn = await this.attendaceService.hasUserClockedIn(user.id)
+    if(isHasClockedIn) {
+      const message = 'Cannot delete a user who has previously clocked in'
+      this.logger.warn(message)
+      throw new HttpException(message, HttpStatus.NOT_ACCEPTABLE)
+    }
+
+    if(userRole !== 'ADMIN' && user.id !== userId) {
+      this.logger.warn('Cannot delete another user')
+      throw new HttpException('Cannot delete another user', HttpStatus.NOT_ACCEPTABLE)
+    }
+
+    const del = await this.prisma.user.delete({
+      where : { id : id }
+    })
+
+    return {
+      statusCode : 200,
+      message : "User deleted successfully"
+    }
   }
 
   async getToken(refreshToken : any){
@@ -174,4 +200,5 @@ export class UserService {
       throw new UnauthorizedException(err.message);
     }
   }
+
 }

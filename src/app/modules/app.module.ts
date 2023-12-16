@@ -8,9 +8,10 @@ import { APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core'
 import { LoggingInterceptor } from 'src/core/interceptors/logging.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth/auth.guard';
+import { AttendaceModule } from './attendace/attendace.module';
 
 @Module({
-  imports: [UserModule, PrismaModule, AuthModule],
+  imports: [UserModule, PrismaModule, AuthModule, AttendaceModule],
   controllers: [AppController],
   providers: [
     AppService, 

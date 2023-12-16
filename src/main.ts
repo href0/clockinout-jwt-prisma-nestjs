@@ -9,14 +9,14 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   const config = new DocumentBuilder()
-    .setTitle('First NestJS')
-    .setDescription('API description')
+    .setTitle('Href Corp')
+    .setDescription('Auth, CRUD User, Clock In & Clock Out')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
       'accessToken',
     )
     .setVersion('1.0')
-    .addTag('First Nest')
+    // .addTag('First Nest')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-doc', app, document);

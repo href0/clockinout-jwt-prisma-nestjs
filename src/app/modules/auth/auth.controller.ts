@@ -51,15 +51,4 @@ export class AuthController {
     })
   }
 
-  @Public()
-  @Post('xendit')
-  async xendit(
-    @Req() req : Request
-  ) {
-    console.log(req.body)
-    return {
-      statusCode : 200,
-      message : "Ok"
-    }
-  }
 }

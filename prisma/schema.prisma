@@ -25,17 +25,20 @@ model User {
 }
 
 model Attendace {
-  id          Int     @id @default(autoincrement())
-  userId      Int
-  user        User    @relation(fields: [userId], references: [id])
-  clockIn     Int
-  clockOut    Int?
-  latitude    String
-  longitude   String
-  ipAddress   String
-  description String?
-  createdAt   Int
-  updatedAt   Int
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  user              User    @relation(fields: [userId], references: [id])
+  clockIn           Int
+  clockInLatitude   String
+  clockInLongitude  String
+  clockInIpAddress  String
+  clockOut          Int?
+  clockOutLatitude  String?
+  clockOutLongitude String?
+  clockOutIpAddress String?
+  description       String?
+  createdAt         Int
+  updatedAt         Int
 
   @@map("attendance")
 }
