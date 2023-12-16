@@ -45,11 +45,9 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Documentation
 
-```bash
-# unit tests
-$ npm run test
+- Swagger - [Kamil Myśliwiec](http://localhost:3000/api-doc)
 
 # e2e tests
 $ npm run test:e2e
