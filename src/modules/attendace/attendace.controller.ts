@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Req, HttpException, HttpStatus, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
-import { AttendaceService } from './attendace.service';
+import { AttendanceService } from './attendace.service';
 import { ClockInAttendanceDto } from './dto/clockin-attendance.dto';
 import { Request } from 'express';
 import { clockOutAttendanceDto } from './dto/clockout-attendace.dto';
@@ -8,7 +8,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('Attendace')
 @Controller('attendace')
 export class AttendaceController {
-  constructor(private readonly attendaceService: AttendaceService) {}
+  constructor(private readonly attendanceService: AttendanceService) {}
 
   @Post('clockin')
   @UsePipes(ValidationPipe)
@@ -27,13 +27,13 @@ export class AttendaceController {
       ""
     data.userId = req.user['id']
 
-    const isClockInAvailable = this.attendaceService.isClockInAvailable()
+    const isClockInAvailable = this.attendanceService.isClockInAvailable()
     if(!isClockInAvailable) throw new HttpException(`Clock In is open from ${process.env.CLOCK_IN_MIN_TIME} until ${process.env.CLOCK_IN_MAX_TIME}`, HttpStatus.BAD_REQUEST)
 
-    const hasClockedIn = await this.attendaceService.hasUserClockedIn(data.userId);
+    const hasClockedIn = await this.attendanceService.hasUserClockedIn(data.userId);
     if(hasClockedIn) throw new HttpException(`User has already clocked in`, HttpStatus.CONFLICT)
 
-    return this.attendaceService.clockIn(data);
+    return this.attendanceService.clockIn(data);
   }
 
   @Post('clockout')
@@ -52,11 +52,11 @@ export class AttendaceController {
       req.socket.remoteAddress ||
       ""
     data.userId = req.user['id']
-    const hasClockedIn = await this.attendaceService.hasUserClockedOut(data.userId);
+    const hasClockedIn = await this.attendanceService.hasUserClockedOut(data.userId);
     
     if(hasClockedIn) throw new HttpException(`User has already clocked out`, HttpStatus.CONFLICT)
 
-    return this.attendaceService.clockOut(data);
+    return this.attendanceService.clockOut(data);
   }
 
 }

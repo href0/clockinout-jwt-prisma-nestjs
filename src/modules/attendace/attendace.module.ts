@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AttendaceService } from './attendace.service';
+import { AttendanceService } from './attendace.service';
 import { AttendaceController } from './attendace.controller';
 import { PrismaModule } from 'src/config/prisma/prisma.module';
 
 @Module({
   imports : [PrismaModule],
   controllers: [AttendaceController],
-  providers: [AttendaceService],
+  providers: [AttendanceService],
 })
 export class AttendaceModule {}

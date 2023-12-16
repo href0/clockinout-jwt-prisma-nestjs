@@ -12,14 +12,14 @@ import  * as bcrypt from 'bcrypt'
 import { Role } from '@prisma/client';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 import { FilterUserDto, OrderBy } from './dto/filter-user.dto';
-import { AttendaceService } from '../attendace/attendace.service';
+import { AttendanceService } from '../attendace/attendace.service';
 @Injectable()
 export class UserService {
   constructor(
     private prisma : PrismaService,
     private authService : AuthService,
     private jwtService : JwtService,
-    private attendaceService : AttendaceService
+    private attendanceService : AttendanceService
   ){}
   private readonly logger  = new Logger(UserService.name)
   async create(createUserDto: CreateUserDto) {
@@ -156,7 +156,7 @@ export class UserService {
     })
     if(!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND)
 
-    const isHasClockedIn = await this.attendaceService.hasUserClockedIn(user.id)
+    const isHasClockedIn = await this.attendanceService.hasUserClockedIn(user.id)
     if(isHasClockedIn) {
       const message = 'Cannot delete a user who has previously clocked in'
       this.logger.warn(message)

@@ -5,13 +5,13 @@ import { clockOutAttendanceDto } from './dto/clockout-attendace.dto';
 import { TimestampToDate } from 'src/core/utils/common-utils';
 
 @Injectable()
-export class AttendaceService {
+export class AttendanceService {
 
   constructor(
     private prisma : PrismaService
   ){}
 
-  private readonly logger  = new Logger(AttendaceService.name)
+  private readonly logger  = new Logger(AttendanceService.name)
 
   async clockIn(data: ClockInAttendanceDto) {
     const now = new Date().getTime() / 1000
@@ -20,7 +20,7 @@ export class AttendaceService {
     data.updatedAt = now
 
     this.logger.log(`clock In user ${data.userId}`)
-    const create = await this.prisma.attendace.create({
+    const create = await this.prisma.attendance.create({
       data : data,
       select : { id: true, userId : true, clockIn : true, clockInIpAddress :true, clockInLatitude : true, clockInLongitude : true }
     })
@@ -44,7 +44,7 @@ export class AttendaceService {
     data.updatedAt = now
 
     this.logger.log(`clock Out user ${data.userId}`)
-    const create = await this.prisma.attendace.update({
+    const create = await this.prisma.attendance.update({
       where : { id : clockIn },
       data : data,
       select : { id : true, userId : true, clockOut : true, clockOutIpAddress :true, clockOutLatitude : true, clockOutLongitude : true }
@@ -62,7 +62,7 @@ export class AttendaceService {
     const fromDate = new Date(date + " 00:00:01").getTime() / 1000
     const toDate = new Date(date + " 23:59:59").getTime() / 1000
     
-    const userAttendance = await this.prisma.attendace.findFirst({
+    const userAttendance = await this.prisma.attendance.findFirst({
       where: {
         AND : [
           { clockIn : { gte : fromDate} },
@@ -82,7 +82,7 @@ export class AttendaceService {
     const fromDate = new Date(date + " 00:00:01").getTime() / 1000
     const toDate = new Date(date + " 23:59:59").getTime() / 1000
 
-    const userAttendance = await this.prisma.attendace.findFirst({
+    const userAttendance = await this.prisma.attendance.findFirst({
       where: {
         AND : [
           { clockOut : { gte : fromDate} },
