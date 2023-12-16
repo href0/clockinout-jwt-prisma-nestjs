@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, HttpException, HttpStatus, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
+import { Controller, Post, Body, Req, HttpException, HttpStatus, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
 import { AttendaceService } from './attendace.service';
 import { ClockInAttendanceDto } from './dto/clockin-attendance.dto';
 import { Request } from 'express';
@@ -26,6 +26,10 @@ export class AttendaceController {
       req.socket.remoteAddress ||
       ""
     data.userId = req.user['id']
+
+    const isClockInAvailable = this.attendaceService.isClockInAvailable()
+    if(!isClockInAvailable) throw new HttpException(`Clock In is open from ${process.env.CLOCK_IN_MIN_TIME} until ${process.env.CLOCK_IN_MAX_TIME}`, HttpStatus.BAD_REQUEST)
+
     const hasClockedIn = await this.attendaceService.hasUserClockedIn(data.userId);
     if(hasClockedIn) throw new HttpException(`User has already clocked in`, HttpStatus.CONFLICT)
 

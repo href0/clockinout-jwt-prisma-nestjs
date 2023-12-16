@@ -1,8 +1,8 @@
 // import { env } from "process";
 
 export enum JwtExpired {
-  ACCESS = '1h',
-  REFRESH = '30d'
+  ACCESS = '1h', // 1 jam
+  REFRESH = '30d' // 30 hari
 }
 
 export const jwtConfig = {

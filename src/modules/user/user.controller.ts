@@ -1,9 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Req, UseGuards, HttpException, Put, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { RolesGuard } from 'src/guard/roles.guard';
-import { Role, Roles } from '../../../core/decorators/role.decorator';
 import { Request } from 'express'
 import { Public } from 'src/core/decorators/public.decorator';
 import { FilterUserDto } from './dto/filter-user.dto';

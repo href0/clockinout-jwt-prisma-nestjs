@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ClockInAttendanceDto } from './dto/clockin-attendance.dto';
 import { PrismaService } from 'src/config/prisma/prisma.service';
-import { TimestampToDate } from 'src/app/utils/common-utils';
 import { clockOutAttendanceDto } from './dto/clockout-attendace.dto';
+import { TimestampToDate } from 'src/core/utils/common-utils';
 
 @Injectable()
 export class AttendaceService {
@@ -15,7 +15,6 @@ export class AttendaceService {
 
   async clockIn(data: ClockInAttendanceDto) {
     const now = new Date().getTime() / 1000
-
     data.clockIn   = now
     data.createdAt = now
     data.updatedAt = now
@@ -95,5 +94,24 @@ export class AttendaceService {
     });
     return !!userAttendance;
 
+  }
+
+  isClockInAvailable () {
+    const date = new Date()
+    const now = date.getTime()
+    const current = TimestampToDate(now)
+
+    /* NOTE : BISA DIUBAH SESUAI KEBIJAKAN / BISA DIMASUKKAN KE DATABASE UNTUK SETTING BATAS CLOCKIN */
+    const [ currentDate, currentTime ] = current.split(" ")
+    const MIN_TIME =  process.env.CLOCK_IN_MIN_TIME // waktu minimal bisa clock in, contoh = 06:00
+    const MAX_TIME =  process.env.CLOCK_IN_MAX_TIME // keterlambatan paling lama bisa clockin, diatasnya sudah tidak boleh (dianggap tidak masuk), contoh = 11:00
+
+    const minClockIn = new Date(currentDate + " " + MIN_TIME + ":00").getTime()
+    const maxClockIn = new Date(currentDate + " " + MAX_TIME + ":00").getTime()
+    
+    if(now < minClockIn || now > maxClockIn) {
+      return false
+    } 
+    return true
   }
 }

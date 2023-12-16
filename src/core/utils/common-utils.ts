@@ -1,4 +1,4 @@
-export function TimestampToDate(timestamp : number, onlyDate : Boolean = false): string {
+export const TimestampToDate = (timestamp : number, onlyDate : Boolean = false): string => {
   const now: Date = timestamp ? new Date(timestamp) : new Date();
   const year: number = now.getFullYear();
   let month: string | number = now.getMonth() + 1;

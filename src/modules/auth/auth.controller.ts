@@ -2,9 +2,9 @@ import { Controller, Post, Body, ValidationPipe, UsePipes, Res, Delete, Req, Get
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/signup-auth';
 import { SignInAuthDto } from './dto/signin-auth.dto';
-import { Public } from '../../../core/decorators/public.decorator';
 import { Response, Request } from 'express'
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/core/decorators/public.decorator';
 
 @ApiTags("Auth")
 @Controller('auth')
@@ -41,7 +41,7 @@ export class AuthController {
     @Req() req : Request
   ) {
     const refreshToken = req.cookies.refreshToken
-    if(!refreshToken) return res.send(204)
+    if(!refreshToken) return res.sendStatus(204)
     await this.authService.signout(refreshToken)
     res.clearCookie('refreshToken')
 

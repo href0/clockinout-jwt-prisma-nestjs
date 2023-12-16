@@ -15,7 +15,6 @@ export class LoggingInterceptor implements NestInterceptor {
     const httpContext = context.switchToHttp();
     const request = httpContext.getRequest<Request>();
     const response = httpContext.getResponse<Response>();
-    console.log('hjehe')
     response.on('finish', () => {
       // setelah memberikan response, kasih log
       const { method, originalUrl } = request;

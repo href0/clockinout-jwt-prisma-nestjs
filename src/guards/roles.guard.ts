@@ -19,8 +19,6 @@ export class RolesGuard implements CanActivate {
       this.logger.error(message)
       return false
     }
-    console.log('user role', request.user.role)
-    console.log('allowed role', role)
     return true;
   }
 }
