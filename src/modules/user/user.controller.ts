@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Request } from 'express'
@@ -6,6 +6,8 @@ import { Public } from 'src/core/decorators/public.decorator';
 import { FilterUserDto } from './dto/filter-user.dto';
 import { ApiBearerAuth, ApiTags, ApiQuery, ApiBody, ApiCookieAuth } from '@nestjs/swagger';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Role, Roles } from 'src/core/decorators/role.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -90,6 +92,8 @@ export class UserController {
 
   @ApiBearerAuth('accessToken')
   @Delete(':id')
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   remove(
     @Param('id') id: number,
     @Req() request : Request
