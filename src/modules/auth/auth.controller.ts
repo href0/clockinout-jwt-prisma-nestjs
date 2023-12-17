@@ -27,7 +27,10 @@ export class AuthController {
     @Res() res : Response
   ) {
     const { data, refreshToken } = await this.authService.signIn(signInAuthDto)
-    res.cookie('refreshToken', refreshToken)
+    res.cookie('refreshToken', refreshToken, { 
+      maxAge : 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+      httpOnly : true
+     })
     return res.status(200).json({
       statusCode : 200,
       data : data
