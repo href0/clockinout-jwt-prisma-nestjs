@@ -7,11 +7,11 @@ import { LoggingInterceptor } from 'src/core/interceptors/logging.interceptor';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './config/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { AttendaceModule } from './modules/attendace/attendace.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 import { AuthGuard } from './guards/auth.guard';
 
 @Module({
-  imports: [UserModule, PrismaModule, AuthModule, AttendaceModule],
+  imports: [UserModule, PrismaModule, AuthModule, AttendanceModule],
   controllers: [AppController],
   providers: [
     AppService, 

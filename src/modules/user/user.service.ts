@@ -12,7 +12,7 @@ import  * as bcrypt from 'bcrypt'
 import { Role } from '@prisma/client';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 import { FilterUserDto, OrderBy } from './dto/filter-user.dto';
-import { AttendanceService } from '../attendace/attendace.service';
+import { AttendanceService } from '../attendance/attendance.service';
 @Injectable()
 export class UserService {
   constructor(

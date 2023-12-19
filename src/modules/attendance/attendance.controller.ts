@@ -1,13 +1,13 @@
 import { Controller, Post, Body, Req, HttpException, HttpStatus, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
-import { AttendanceService } from './attendace.service';
+import { AttendanceService } from './attendance.service';
 import { ClockInAttendanceDto } from './dto/clockin-attendance.dto';
 import { Request } from 'express';
-import { clockOutAttendanceDto } from './dto/clockout-attendace.dto';
+import { clockOutAttendanceDto } from './dto/clockout-attendance.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Attendace')
-@Controller('attendace')
-export class AttendaceController {
+@ApiTags('Attendance')
+@Controller('attendance')
+export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
   @Post('clockin')

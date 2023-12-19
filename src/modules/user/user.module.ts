@@ -4,11 +4,11 @@ import { UserController } from './user.controller';
 import { PrismaModule } from 'src/config/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from '../auth/auth.service';
-import { AttendaceModule } from '../attendace/attendace.module';
-import { AttendanceService } from '../attendace/attendace.service';
+import { AttendanceModule } from '../attendance/attendance.module';
+import { AttendanceService } from '../attendance/attendance.service';
 
 @Module({
-  imports : [PrismaModule, AttendaceModule, JwtModule],
+  imports : [PrismaModule, AttendanceModule, JwtModule],
   controllers: [UserController],
   providers: [UserService, AuthService, AttendanceService],
 })

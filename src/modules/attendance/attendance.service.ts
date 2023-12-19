@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ClockInAttendanceDto } from './dto/clockin-attendance.dto';
 import { PrismaService } from 'src/config/prisma/prisma.service';
-import { clockOutAttendanceDto } from './dto/clockout-attendace.dto';
+import { clockOutAttendanceDto } from './dto/clockout-attendance.dto';
 import { TimestampToDate } from 'src/core/utils/common-utils';
 
 @Injectable()
